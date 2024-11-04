@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class AviaSoulsTest {
+
     @Test
     public void shouldCompareByPrice() {
         Ticket ticket1 = new Ticket("SVO", "KZN", 5000, 800, 1000);
@@ -19,10 +20,14 @@ public class AviaSoulsTest {
         aviaSouls.add(new Ticket("SVO", "KZN", 5000, 900, 1200));
         aviaSouls.add(new Ticket("SVO", "KZN", 7000, 830, 1230));
 
+        Ticket[] expected = {
+                new Ticket("SVO", "KZN", 5000, 900, 1200),
+                new Ticket("SVO", "KZN", 6000, 800, 1100),
+                new Ticket("SVO", "KZN", 7000, 830, 1230)
+        };
         Ticket[] result = aviaSouls.search("SVO", "KZN");
-        assertEquals(5000, result[0].getPrice());
-        assertEquals(6000, result[1].getPrice());
-        assertEquals(7000, result[2].getPrice());
+
+        assertArrayEquals(expected, result);
     }
 
     @Test
@@ -33,15 +38,14 @@ public class AviaSoulsTest {
         aviaSouls.add(new Ticket("SVO", "KZN", 7000, 830, 1230));
 
         TicketTimeComparator comparator = new TicketTimeComparator();
+
+        Ticket[] expected = {
+                new Ticket("SVO", "KZN", 6000, 900, 1000),
+                new Ticket("SVO", "KZN", 5000, 800, 1100),
+                new Ticket("SVO", "KZN", 7000, 830, 1230)
+        };
         Ticket[] result = aviaSouls.searchAndSortBy("SVO", "KZN", comparator);
 
-        // Ожидаем, что билеты отсортируются по продолжительности полета
-        int duration1 = result[0].getTimeTo() - result[0].getTimeFrom();
-        int duration2 = result[1].getTimeTo() - result[1].getTimeFrom();
-        int duration3 = result[2].getTimeTo() - result[2].getTimeFrom();
-
-        assertTrue(duration1 <= duration2);
-        assertTrue(duration2 <= duration3);
+        assertArrayEquals(expected, result);
     }
 }
-
